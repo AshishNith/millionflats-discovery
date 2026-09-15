@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MillionFlats — AI Calling Agent Discovery Form</title>
+<style>
+  :root{
+    --navy:#0b1d33; --navy-2:#132b4a; --gold:#c9a24b; --gold-2:#e2c476;
+    --bg:#f6f5f1; --card:#ffffff; --text:#1c2430; --muted:#5b6472; --border:#e3e1da;
+    --ok:#1c7a4d;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;padding:0;background:var(--bg);color:var(--text);
+    font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;line-height:1.5;}
+  header{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-2) 100%);
+    color:#fff;padding:40px 20px 34px;text-align:center;}
+  header .eyebrow{letter-spacing:3px;text-transform:uppercase;font-size:12px;
+    color:var(--gold-2);margin-bottom:10px;font-weight:600;}
+  header h1{margin:0 0 10px;font-size:clamp(22px,4vw,32px);font-weight:700;}
+  header p{margin:0 auto;max-width:640px;color:#cfd8e3;font-size:15px;padding:0 8px;}
+  main{max-width:760px;margin:-20px auto 60px;padding:0 16px;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;
+    padding:26px 22px;margin-bottom:20px;box-shadow:0 2px 10px rgba(11,29,51,0.05);}
+  .contact-card{margin-top:24px;}
+  .section-title{display:flex;align-items:center;gap:10px;margin:0 0 18px;}
+  .section-num{background:var(--navy);color:var(--gold-2);font-weight:700;
+    font-size:13px;width:28px;height:28px;border-radius:50%;display:flex;
+    align-items:center;justify-content:center;flex-shrink:0;}
+  .section-title h2{margin:0;font-size:18px;color:var(--navy);}
+  .q{margin-bottom:22px;}
+  .q:last-child{margin-bottom:0;}
+  .q > label.qlabel{display:block;font-weight:600;font-size:14.5px;margin-bottom:9px;color:var(--text);}
+  .qhint{font-weight:400;color:var(--muted);font-size:12.5px;display:block;margin-top:2px;}
+  .options{display:flex;flex-wrap:wrap;gap:8px;}
+  .opt{display:flex;align-items:center;gap:7px;background:#f3f1ea;border:1px solid var(--border);
+    border-radius:8px;padding:8px 12px;cursor:pointer;font-size:13.5px;user-select:none;
+    transition:all .15s ease;}
+  .opt:hover{border-color:var(--gold);}
+  .opt input{accent-color:var(--navy);width:16px;height:16px;cursor:pointer;flex-shrink:0;}
+  .opt.checked{background:var(--navy);border-color:var(--navy);color:#fff;}
+  .opt.checked input{accent-color:var(--gold);}
+  textarea, input[type=text], input[type=email], input[type=tel], input[type=date]{
+    width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;
+    font-size:14px;font-family:inherit;color:var(--text);background:#fff;}
+  textarea{min-height:70px;resize:vertical;}
+  textarea:focus, input:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(11,29,51,0.08);}
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .contact-grid .full{grid-column:1/-1;}
+  .contact-grid label{display:block;font-weight:600;font-size:13.5px;margin-bottom:6px;}
+  .required{color:#b34747;}
+  footer.submit-bar{position:sticky;bottom:0;background:var(--bg);padding-top:14px;}
+  #submitBtn{width:100%;background:var(--navy);color:#fff;border:none;padding:16px;
+    font-size:16px;font-weight:700;border-radius:10px;cursor:pointer;letter-spacing:.3px;
+    transition:background .15s ease;}
+  #submitBtn:hover{background:var(--navy-2);}
+  #submitBtn:disabled{opacity:.6;cursor:not-allowed;}
+  .status-msg{text-align:center;margin-top:12px;font-size:13.5px;}
+  .status-msg.error{color:#b34747;}
+  .status-msg.ok{color:var(--ok);}
+  #successScreen{display:none;text-align:center;padding:70px 20px;}
+  #successScreen .check{width:64px;height:64px;border-radius:50%;background:var(--ok);
+    color:#fff;font-size:32px;display:flex;align-items:center;justify-content:center;
+    margin:0 auto 18px;}
+  #successScreen h2{color:var(--navy);margin-bottom:8px;}
+  #successScreen p{color:var(--muted);max-width:420px;margin:0 auto;}
+  .progress-wrap{max-width:760px;margin:-14px auto 0;padding:0 16px;}
+  .progress-track{height:5px;background:#dfe0dc;border-radius:3px;overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-2));width:0%;
+    transition:width .2s ease;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Client Discovery</div>
+  <h1>AI Calling Agent — Discovery Form</h1>
+  <p>Prepared by GoRan AI / VoxFlow for <strong>MillionFlats</strong> — the global luxury real estate
+     marketplace connecting investors with premium off-plan developments across Dubai/UAE and India.
+     Please tick what applies and write in your own words where needed. Takes about 10 minutes.</p>
+</header>
+
+<div class="progress-wrap"><div class="progress-track"><div class="progress-fill" id="progressFill"></div></div></div>
+
+<main>
+  <form id="discoveryForm">
+
+    <div class="card contact-card">
+      <div class="section-title"><span class="section-num">i</span><h2>Your Details</h2></div>
+      <div class="contact-grid">
+        <div><label>Full name <span class="required">*</span></label>
+          <input type="text" id="contact_name" required></div>
+        <div><label>Role / title</label>
+          <input type="text" id="contact_role"></div>
+        <div><label>Email <span class="required">*</span></label>
+          <input type="email" id="contact_email" required></div>
+        <div><label>Phone</label>
+          <input type="tel" id="contact_phone"></div>
+      </div>
+    </div>
+
+    <div id="sections"></div>
+
+    <footer class="submit-bar">
+      <button type="submit" id="submitBtn">Submit Responses</button>
+      <div class="status-msg" id="statusMsg"></div>
+    </footer>
+  </form>
+
+  <div id="successScreen">
+    <div class="check">&#10003;</div>
+    <h2>Thank you!</h2>
+    <p>Your responses have been received. We'll put together a proposed call script, persona,
+       and configuration for MillionFlats to review before anything goes live.</p>
+  </div>
+</main>
+
+<script>
+const API_URL = "https://voice.goran.in/api/public/discovery";
+
+const SECTIONS = [
+{
+  title: "Platform & Business Overview",
+  questions: [
+    {id:"model_confirm", type:"checkbox", label:"Is this accurate: MillionFlats is a marketplace connecting investors with developers/agents/agencies (not a single builder)?",
+      options:["Yes, accurate","Partially accurate","No, needs correction"]},
+    {id:"model_confirm_detail", type:"textarea", label:"If anything about the model is changing soon, describe it here."},
+    {id:"markets_live", type:"checkbox", label:"Which markets/cities are live today?",
+      options:["Dubai / UAE","Mumbai","Pune","Bangalore","Delhi NCR","Other India city"]},
+    {id:"markets_next", type:"textarea", label:"Which markets/cities are coming next?"},
+    {id:"user_types", type:"checkbox", label:"Which user types should we design calling flows for?",
+      options:["Investors / Buyers","Developers (listing partners)","Agents / Agencies","Renters","Existing property owners","Other"]},
+    {id:"differentiators", type:"checkbox", label:"Which differentiators should the agent actively pitch on calls?",
+      options:["AI investment scoring","Independent legal checks","Certified 3D tours","Golden Visa eligible listings","Multi-country reach","Only explain if asked, don't pitch"]},
+  ]
+},
+{
+  title: "Purpose of the Calling Agent",
+  questions: [
+    {id:"outbound_trigger", type:"checkbox", label:"Primary outbound trigger — where do call-worthy leads come from?",
+      options:["\"Register your interest\" form","\"Contact Our Experts\" form","Paid ads (Meta/Google)","Portal syndication","Events","Agent referrals","Other"]},
+    {id:"inbound_handling", type:"checkbox", label:"Should the agent also handle inbound calls?",
+      options:["Yes, handle inbound too","No, outbound only"]},
+    {id:"flows_needed", type:"checkbox", label:"Which call flows should the agent be able to run?",
+      options:["Qualify investor lead against a project","Book a call / site visit / virtual 3D tour","Onboard new developers","Onboard new agents/agencies","Post-registration nurture (new matching listings)"]},
+    {id:"success_definition", type:"textarea", label:"What does a \"successful\" call look like, per flow?"},
+    {id:"escalation_triggers", type:"checkbox", label:"What should trigger an immediate handoff to a human?",
+      options:["High-ticket / serious investor","Legal or visa questions","Partnership negotiation","Upset existing customer","Other"]},
+  ]
+},
+{
+  title: "Callers / User Profile",
+  questions: [
+    {id:"investor_profile", type:"checkbox", label:"Investor profile — who are we mostly talking to?",
+      options:["International / NRI buyers","Local UAE residents","Local India residents","A mix of all"]},
+    {id:"ticket_size", type:"text", label:"Typical investment ticket size / budget range?"},
+    {id:"familiarity", type:"checkbox", label:"Are investors generally familiar with off-plan investing and Golden Visa rules?",
+      options:["Mostly new, needs simple explanation","Mostly experienced","Mixed"]},
+    {id:"onboarding_caller", type:"checkbox", label:"For developer/agent/agency onboarding — who typically registers interest?",
+      options:["A founder","A sales head","An individual broker","Other"]},
+    {id:"call_volume", type:"text", label:"Expected call volume per week (and does it spike around launches)?"},
+    {id:"time_zones", type:"checkbox", label:"Which calling windows should the agent respect?",
+      options:["UAE business hours","India business hours","Both, market-dependent","Other"]},
+  ]
+},
+{
+  title: "Languages & Voice",
+  questions: [
+    {id:"languages", type:"checkbox", label:"Which languages must the agent support?",
+      options:["English","Arabic","Hindi","Other regional Indian language"]},
+    {id:"lang_switch", type:"checkbox", label:"Should the agent detect and switch languages mid-call?",
+      options:["Yes","No"]},
+    {id:"tone", type:"checkbox", label:"What tone fits the brand?",
+      options:["Polished & consultative","Warm & relationship-driven","Crisp & efficient"]},
+    {id:"voice_gender", type:"checkbox", label:"Voice preference?",
+      options:["Male","Female","No preference"]},
+    {id:"accent", type:"checkbox", label:"Accent preference?",
+      options:["Neutral international English","UAE / Gulf accent","Indian accent","Other"]},
+    {id:"ai_disclosure_notes", type:"textarea", label:"Any special handling needed for AI disclosure on high-value investor calls?"},
+  ]
+},
+{
+  title: "Persona & Script",
+  questions: [
+    {id:"identity_by_market", type:"checkbox", label:"Should the agent's name/identity differ by market?",
+      options:["Yes, differ by market (e.g. Arabic name for Dubai, Indian name for India)","No, one identity everywhere"]},
+    {id:"existing_scripts", type:"checkbox", label:"Do you have existing script materials we should base the agent on?",
+      options:["Yes, investor call script","Yes, developer/agent onboarding script","No scripts yet — start from scratch"]},
+    {id:"top_questions", type:"checkbox", label:"Top questions investors ask on calls?",
+      options:["ROI / rental yield expectations","Golden Visa eligibility","Payment plan / installments","Handover date","Legal / title verification process","Currency (AED vs INR)","Other"]},
+    {id:"mandatory_disclaimers", type:"textarea", label:"Any mandatory disclaimer language (e.g. \"not investment advice\", RERA/DLD disclosures)?"},
+    {id:"never_do", type:"checkbox", label:"What must the agent NEVER do?",
+      options:["Quote a guaranteed ROI/return","Promise Golden Visa approval","Negotiate final pricing","Give legal or tax advice","Other"]},
+    {id:"script_style", type:"checkbox", label:"Should the agent sound...",
+      options:["Scripted & precise","Conversational & consultative"]},
+  ]
+},
+{
+  title: "Knowledge Base (Listings & Platform Data)",
+  questions: [
+    {id:"listing_data", type:"checkbox", label:"Which per-project data should the agent know?",
+      options:["Developer name","City","BHK types","Price & currency","Payment plan","Handover date","Golden Visa eligibility","Amenities","Current availability"]},
+    {id:"explain_scoring", type:"textarea", label:"How should the agent explain \"AI investment scoring\" and \"Meta-dology\" if asked?"},
+    {id:"explain_legal", type:"textarea", label:"What does \"independent legal checks\" cover, in your own words?"},
+    {id:"update_frequency", type:"checkbox", label:"How often does listing data change?",
+      options:["Daily","Weekly","Per launch phase","Rarely"]},
+    {id:"data_owner", type:"text", label:"Who owns keeping this data current so the agent never quotes a stale listing?"},
+    {id:"onboarding_criteria", type:"textarea", label:"Eligibility criteria, fees, or process for developer/agent/agency onboarding?"},
+  ]
+},
+{
+  title: "Call Flow & Actions",
+  questions: [
+    {id:"book_consultation", type:"checkbox", label:"Should the agent book a consultation directly into a calendar?",
+      options:["Yes","No"]},
+    {id:"calendar_system", type:"text", label:"If yes, which calendar/booking system?"},
+    {id:"offer_3d_tour", type:"checkbox", label:"Should the agent offer/schedule the certified 3D property tour?",
+      options:["Yes","No"]},
+    {id:"data_to_capture", type:"checkbox", label:"What must be captured per call?",
+      options:["Budget","Preferred city / project","BHK type","Investment purpose (self-use vs rental)","Timeline","Citizenship / residency","Company name / portfolio (developers)"]},
+    {id:"followup_channel", type:"checkbox", label:"Follow-up channel after the call?",
+      options:["WhatsApp","Email","SMS","None"]},
+    {id:"escalation_flow", type:"textarea", label:"Under what conditions should the call transfer to a human, and to whom?"},
+    {id:"difficult_callers", type:"textarea", label:"How should the agent handle a caller who wants to negotiate price, question legal verification, or is upset about a delay?"},
+  ]
+},
+{
+  title: "Integrations & Data",
+  questions: [
+    {id:"crm_used", type:"checkbox", label:"Which CRM/lead-management tool do you use today?",
+      options:["HubSpot","Zoho","Salesforce","Custom / other system","None yet"]},
+    {id:"crm_push", type:"checkbox", label:"Should leads and call outcomes push automatically into that CRM?",
+      options:["Yes","No"]},
+    {id:"auto_call_speed", type:"checkbox", label:"How fast should a form submission trigger an outbound call?",
+      options:["Real-time","Same day","Next day","Other"]},
+    {id:"whatsapp_needed", type:"checkbox", label:"Do you need WhatsApp Business integration for international investors?",
+      options:["Yes","No"]},
+    {id:"phone_numbers", type:"checkbox", label:"Phone numbers for calling — ",
+      options:["Use existing number(s)","Need new number(s) provisioned per market"]},
+    {id:"recording_storage", type:"textarea", label:"Call recording / transcript storage and retention requirements?"},
+  ]
+},
+{
+  title: "Compliance & Privacy",
+  questions: [
+    {id:"regulatory_regimes", type:"checkbox", label:"Which regulatory regimes apply?",
+      options:["UAE RERA / DLD","India RERA","Both","Other"]},
+    {id:"kyc_aml", type:"checkbox", label:"Should the agent flag/collect info relevant to KYC/AML for international investors?",
+      options:["Yes","No"]},
+    {id:"dnd_consent", type:"checkbox", label:"Do TRAI/DND (India) or equivalent UAE consent rules apply to your calling?",
+      options:["Yes, must comply","No specific requirement","Unsure"]},
+    {id:"recording_disclosure", type:"checkbox", label:"Is an explicit consent / recording disclosure line required at call start?",
+      options:["Yes","No","Unsure"]},
+    {id:"data_residency", type:"textarea", label:"Any data residency or retention requirements given the cross-border leads?"},
+  ]
+},
+{
+  title: "Reporting & Success Metrics",
+  questions: [
+    {id:"metrics", type:"checkbox", label:"Which metrics matter most?",
+      options:["Leads contacted","Connect rate","Consultations booked","3D tours scheduled","Developer/agent applications progressed","Conversion to confirmed investor"]},
+    {id:"segmented_reporting", type:"checkbox", label:"Should reporting be segmented?",
+      options:["By market (UAE vs India)","By user type (investor/developer/agent)","Both","Neither"]},
+    {id:"report_recipients", type:"text", label:"Who should receive reports, and how often?"},
+    {id:"dashboard_access", type:"checkbox", label:"Do you want dashboard access to individual call transcripts/recordings?",
+      options:["Yes","No"]},
+  ]
+},
+{
+  title: "Timeline & Scale",
+  questions: [
+    {id:"go_live_date", type:"date", label:"Target go-live date?"},
+    {id:"pilot_scope", type:"checkbox", label:"Should we pilot on one flow first, or go full rollout?",
+      options:["Pilot: Dubai investor flow first","Pilot: India flow first","Full rollout, all flows from day one","Other"]},
+    {id:"volume_growth", type:"textarea", label:"Expected call/lead volume today, and how fast is it likely to grow?"},
+    {id:"budget_range", type:"checkbox", label:"Budget range?",
+      options:["Under $500/mo","$500–2,000/mo","$2,000–5,000/mo","$5,000+/mo","Prefer to discuss"]},
+  ]
+},
+{
+  title: "Anything Else",
+  questions: [
+    {id:"reference_recording", type:"checkbox", label:"Can you share a recording of a real relationship-manager call as a reference?",
+      options:["Yes, can share","No, none available"]},
+    {id:"competitor_agents", type:"textarea", label:"Have you seen AI calling agents used by other real estate marketplaces/proptech platforms you liked or disliked?"},
+    {id:"other_requirements", type:"textarea", label:"Any other requirements, constraints, or concerns not covered above?"},
+  ]
+},
+];
+
+const sectionsEl = document.getElementById('sections');
+
+SECTIONS.forEach((section, sIdx) => {
+  const card = document.createElement('div');
+  card.className = 'card';
+
+  const titleWrap = document.createElement('div');
+  titleWrap.className = 'section-title';
+  titleWrap.innerHTML = `<span class="section-num">${sIdx+1}</span><h2>${section.title}</h2>`;
+  card.appendChild(titleWrap);
+
+  section.questions.forEach(q => {
+    const qWrap = document.createElement('div');
+    qWrap.className = 'q';
+
+    const label = document.createElement('label');
+    label.className = 'qlabel';
+    label.textContent = q.label;
+    qWrap.appendChild(label);
+
+    if (q.type === 'checkbox') {
+      const opts = document.createElement('div');
+      opts.className = 'options';
+      q.options.forEach((optText, oIdx) => {
+        const optLabel = document.createElement('label');
+        optLabel.className = 'opt';
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.name = q.id;
+        cb.value = optText;
+        cb.addEventListener('change', () => optLabel.classList.toggle('checked', cb.checked));
+        optLabel.appendChild(cb);
+        optLabel.appendChild(document.createTextNode(optText));
+        opts.appendChild(optLabel);
+      });
+      qWrap.appendChild(opts);
+    } else if (q.type === 'textarea') {
+      const ta = document.createElement('textarea');
+      ta.name = q.id;
+      qWrap.appendChild(ta);
+    } else if (q.type === 'date') {
+      const inp = document.createElement('input');
+      inp.type = 'date';
+      inp.name = q.id;
+      qWrap.appendChild(inp);
+    } else {
+      const inp = document.createElement('input');
+      inp.type = 'text';
+      inp.name = q.id;
+      qWrap.appendChild(inp);
+    }
+
+    card.appendChild(qWrap);
+  });
+
+  sectionsEl.appendChild(card);
+});
+
+// Progress bar based on scroll
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+  document.getElementById('progressFill').style.width = Math.min(100, Math.max(0, scrolled)) + '%';
+});
+
+function collectAnswers() {
+  const answers = {};
+  SECTIONS.forEach(section => {
+    section.questions.forEach(q => {
+      if (q.type === 'checkbox') {
+        const checked = Array.from(document.querySelectorAll(`input[name="${q.id}"]:checked`)).map(el => el.value);
+        answers[q.id] = { question: q.label, type: 'checkbox', value: checked };
+      } else {
+        const el = document.querySelector(`[name="${q.id}"]`);
+        answers[q.id] = { question: q.label, type: q.type, value: el ? el.value : '' };
+      }
+    });
+  });
+  return answers;
+}
+
+document.getElementById('discoveryForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  const statusEl = document.getElementById('statusMsg');
+  statusEl.textContent = '';
+  statusEl.className = 'status-msg';
+
+  const payload = {
+    form: 'millionflats',
+    contact_name: document.getElementById('contact_name').value,
+    contact_email: document.getElementById('contact_email').value,
+    contact_phone: document.getElementById('contact_phone').value,
+    answers: {
+      contact_role: { question: 'Role / title', type: 'text', value: document.getElementById('contact_role').value },
+      ...collectAnswers()
+    }
+  };
+
+  if (!payload.contact_name || !payload.contact_email) {
+    statusEl.textContent = 'Please fill in your name and email before submitting.';
+    statusEl.className = 'status-msg error';
+    document.getElementById('contact_name').scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error('Request failed: ' + res.status);
+    document.getElementById('discoveryForm').style.display = 'none';
+    document.querySelector('.progress-wrap').style.display = 'none';
+    document.getElementById('successScreen').style.display = 'block';
+    window.scrollTo({top:0, behavior:'smooth'});
+  } catch (err) {
+    statusEl.textContent = 'Something went wrong submitting your responses. Please try again in a moment.';
+    statusEl.className = 'status-msg error';
+    btn.disabled = false;
+    btn.textContent = 'Submit Responses';
+  }
+});
+</script>
+
+</body>
+</html>
