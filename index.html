@@ -65,6 +65,9 @@
   #successScreen h2{color:var(--navy);margin-bottom:8px;}
   #successScreen p{color:var(--muted);max-width:420px;margin:0 auto;}
   .progress-wrap{max-width:760px;margin:-14px auto 0;padding:0 16px;}
+  .info-steps{margin:0 0 20px;padding-left:22px;color:var(--text);}
+  .info-steps li{margin-bottom:10px;font-size:14px;line-height:1.55;}
+  .info-steps li:last-child{margin-bottom:0;}
   .progress-track{height:5px;background:#dfe0dc;border-radius:3px;overflow:hidden;}
   .progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-2));width:0%;
     transition:width .2s ease;}
@@ -280,6 +283,41 @@ const SECTIONS = [
   ]
 },
 {
+  title: "Campaign & Persona Configuration",
+  questions: [
+    {id:"campaign_language", type:"text", label:"Primary language for this specific campaign (if different from your answer in Languages & Voice above)"},
+    {id:"persona_type", type:"checkbox", label:"What type of persona/agent is this for?",
+      options:["Customer Support","Sales / Outreach (cold or warm)","Lead Qualification","Appointment / Site-visit Booking","Payment / EMI Reminders","Other"]},
+    {id:"call_direction", type:"checkbox", label:"Call direction for this agent/campaign?",
+      options:["Inbound only","Outbound only","Both inbound and outbound"]},
+    {id:"campaign_name", type:"text", label:"Campaign name"},
+    {id:"campaign_number", type:"text", label:"Phone number this campaign will call from / receive calls on"},
+    {id:"campaign_contact_count", type:"text", label:"Approx. number of contacts in this campaign"},
+    {id:"retry_attempts", type:"checkbox", label:"Number of retry attempts for unanswered/missed calls?",
+      options:["0 (no retry)","1 retry","2 retries","3 retries","More than 3"]},
+    {id:"retry_gap", type:"text", label:"Gap between retry attempts (e.g. \"2 hours\", \"next day\")"},
+    {id:"calling_window_start", type:"text", label:"Calling window — start time (e.g. 10:00 AM IST)"},
+    {id:"calling_window_end", type:"text", label:"Calling window — end time (e.g. 7:00 PM IST)"},
+    {id:"kb_contents", type:"checkbox", label:"What should be included in the knowledge base?",
+      options:["Property / project details (price, BHK, amenities, availability)","Company details (about MillionFlats, differentiators, contact info)","Legal / compliance disclaimers","Frequently asked questions","Payment plans & financing options","Developer profiles","Other"]},
+    {id:"tools_to_connect", type:"checkbox", label:"Which tools/integrations should be connected?",
+      options:["CRM (Zoho / HubSpot / Salesforce / etc.)","Calendar (Google Calendar / Outlook)","WhatsApp Business","Payment gateway","SMS gateway","Email","Property / listing management system","Custom API / webhook","None yet"]},
+  ]
+},
+{
+  title: "Phone Number Setup — Vobiz (What To Expect)",
+  info: [
+    "Create or log into your Vobiz account at vobiz.ai and complete business/KYC verification.",
+    "Purchase the phone number (or port in an existing one) that the agent will call from and receive calls on.",
+    "In the Vobiz dashboard, open that number's settings and set the Answer URL (for incoming calls) to: https://voice.goran.in/api/vobiz/incoming-call — Method: POST.",
+    "Set the Hangup URL to: https://voice.goran.in/api/vobiz/hangup — Method: POST.",
+    "Share the Vobiz Auth ID, Auth Token, and the purchased number with the GoRan AI team — we configure these in VoxFlow Settings so outbound calls use the same number.",
+    "We run a test inbound and outbound call together to confirm audio quality and webhook delivery before go-live.",
+    "Once verified, the number goes live for your campaigns."
+  ],
+  questions: []
+},
+{
   title: "Anything Else",
   questions: [
     {id:"reference_recording", type:"checkbox", label:"Can you share a recording of a real relationship-manager call as a reference?",
@@ -300,6 +338,17 @@ SECTIONS.forEach((section, sIdx) => {
   titleWrap.className = 'section-title';
   titleWrap.innerHTML = `<span class="section-num">${sIdx+1}</span><h2>${section.title}</h2>`;
   card.appendChild(titleWrap);
+
+  if (section.info) {
+    const ol = document.createElement('ol');
+    ol.className = 'info-steps';
+    section.info.forEach(step => {
+      const li = document.createElement('li');
+      li.textContent = step;
+      ol.appendChild(li);
+    });
+    card.appendChild(ol);
+  }
 
   section.questions.forEach(q => {
     const qWrap = document.createElement('div');
