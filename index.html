@@ -77,7 +77,8 @@
   <h1>AI Calling Agent — Discovery Form</h1>
   <p>Prepared by GoRan AI / VoxFlow for <strong>MillionFlats</strong> — the global luxury real estate
      marketplace connecting investors with premium off-plan developments across Dubai/UAE and India.
-     Please tick what applies and write in your own words where needed. Takes about 10 minutes.</p>
+     This calling agent will initially call Indian leads only, so the questions below are scoped to
+     that. Please tick what applies and write in your own words where needed. Takes about 10 minutes.</p>
 </header>
 
 <div class="progress-wrap"><div class="progress-track"><div class="progress-fill" id="progressFill"></div></div></div>
@@ -125,13 +126,13 @@ const SECTIONS = [
     {id:"model_confirm", type:"checkbox", label:"Is this accurate: MillionFlats is a marketplace connecting investors with developers/agents/agencies (not a single builder)?",
       options:["Yes, accurate","Partially accurate","No, needs correction"]},
     {id:"model_confirm_detail", type:"textarea", label:"If anything about the model is changing soon, describe it here."},
-    {id:"markets_live", type:"checkbox", label:"Which markets/cities are live today?",
-      options:["Dubai / UAE","Mumbai","Pune","Bangalore","Delhi NCR","Other India city"]},
-    {id:"markets_next", type:"textarea", label:"Which markets/cities are coming next?"},
+    {id:"markets_live", type:"checkbox", label:"Which Indian cities/markets are live today?",
+      options:["Mumbai","Pune","Bangalore","Delhi NCR","Other India city"]},
+    {id:"markets_next", type:"textarea", label:"Which Indian cities/markets are coming next?"},
     {id:"user_types", type:"checkbox", label:"Which user types should we design calling flows for?",
       options:["Investors / Buyers","Developers (listing partners)","Agents / Agencies","Renters","Existing property owners","Other"]},
     {id:"differentiators", type:"checkbox", label:"Which differentiators should the agent actively pitch on calls?",
-      options:["AI investment scoring","Independent legal checks","Certified 3D tours","Golden Visa eligible listings","Multi-country reach","Only explain if asked, don't pitch"]},
+      options:["AI investment scoring","Independent legal checks","Certified 3D tours","Only explain if asked, don't pitch"]},
   ]
 },
 {
@@ -152,22 +153,23 @@ const SECTIONS = [
   title: "Callers / User Profile",
   questions: [
     {id:"investor_profile", type:"checkbox", label:"Investor profile — who are we mostly talking to?",
-      options:["International / NRI buyers","Local UAE residents","Local India residents","A mix of all"]},
-    {id:"ticket_size", type:"text", label:"Typical investment ticket size / budget range?"},
-    {id:"familiarity", type:"checkbox", label:"Are investors generally familiar with off-plan investing and Golden Visa rules?",
+      options:["First-time home buyers","Repeat / experienced investors","NRIs (Indians based abroad)","A mix of all"]},
+    {id:"ticket_size", type:"text", label:"Typical investment ticket size / budget range (in ₹)?"},
+    {id:"familiarity", type:"checkbox", label:"Are investors generally familiar with off-plan investing?",
       options:["Mostly new, needs simple explanation","Mostly experienced","Mixed"]},
     {id:"onboarding_caller", type:"checkbox", label:"For developer/agent/agency onboarding — who typically registers interest?",
       options:["A founder","A sales head","An individual broker","Other"]},
     {id:"call_volume", type:"text", label:"Expected call volume per week (and does it spike around launches)?"},
-    {id:"time_zones", type:"checkbox", label:"Which calling windows should the agent respect?",
-      options:["UAE business hours","India business hours","Both, market-dependent","Other"]},
+    {id:"time_zones", type:"checkbox", label:"Which calling windows should the agent respect (India business hours)?",
+      options:["Morning (9am–12pm IST)","Afternoon (12pm–5pm IST)","Evening (5pm–8pm IST)","Other"]},
   ]
 },
 {
   title: "Languages & Voice",
   questions: [
     {id:"languages", type:"checkbox", label:"Which languages must the agent support?",
-      options:["English","Arabic","Hindi","Other regional Indian language"]},
+      options:["English","Hindi","Marathi","Tamil","Telugu","Kannada","Malayalam","Bengali","Gujarati","Punjabi"]},
+    {id:"languages_other", type:"text", label:"Other language(s) not listed above — please specify"},
     {id:"lang_switch", type:"checkbox", label:"Should the agent detect and switch languages mid-call?",
       options:["Yes","No"]},
     {id:"tone", type:"checkbox", label:"What tone fits the brand?",
@@ -175,22 +177,22 @@ const SECTIONS = [
     {id:"voice_gender", type:"checkbox", label:"Voice preference?",
       options:["Male","Female","No preference"]},
     {id:"accent", type:"checkbox", label:"Accent preference?",
-      options:["Neutral international English","UAE / Gulf accent","Indian accent","Other"]},
+      options:["Neutral Indian English","Hindi-accented English","Regional accent (per language)","Other"]},
     {id:"ai_disclosure_notes", type:"textarea", label:"Any special handling needed for AI disclosure on high-value investor calls?"},
   ]
 },
 {
   title: "Persona & Script",
   questions: [
-    {id:"identity_by_market", type:"checkbox", label:"Should the agent's name/identity differ by market?",
-      options:["Yes, differ by market (e.g. Arabic name for Dubai, Indian name for India)","No, one identity everywhere"]},
+    {id:"identity_by_market", type:"checkbox", label:"Should the agent's name/identity differ by language/region within India?",
+      options:["Yes, vary by language/region (e.g. different persona name per language)","No, one identity everywhere"]},
     {id:"existing_scripts", type:"checkbox", label:"Do you have existing script materials we should base the agent on?",
       options:["Yes, investor call script","Yes, developer/agent onboarding script","No scripts yet — start from scratch"]},
     {id:"top_questions", type:"checkbox", label:"Top questions investors ask on calls?",
-      options:["ROI / rental yield expectations","Golden Visa eligibility","Payment plan / installments","Handover date","Legal / title verification process","Currency (AED vs INR)","Other"]},
-    {id:"mandatory_disclaimers", type:"textarea", label:"Any mandatory disclaimer language (e.g. \"not investment advice\", RERA/DLD disclosures)?"},
+      options:["ROI / rental yield expectations","Payment plan / installments","Handover date","Legal / title verification process","Pricing (per sq. ft. / total)","Other"]},
+    {id:"mandatory_disclaimers", type:"textarea", label:"Any mandatory disclaimer language (e.g. \"not investment advice\", RERA disclosures)?"},
     {id:"never_do", type:"checkbox", label:"What must the agent NEVER do?",
-      options:["Quote a guaranteed ROI/return","Promise Golden Visa approval","Negotiate final pricing","Give legal or tax advice","Other"]},
+      options:["Quote a guaranteed ROI/return","Negotiate final pricing","Give legal or tax advice","Other"]},
     {id:"script_style", type:"checkbox", label:"Should the agent sound...",
       options:["Scripted & precise","Conversational & consultative"]},
   ]
@@ -199,7 +201,7 @@ const SECTIONS = [
   title: "Knowledge Base (Listings & Platform Data)",
   questions: [
     {id:"listing_data", type:"checkbox", label:"Which per-project data should the agent know?",
-      options:["Developer name","City","BHK types","Price & currency","Payment plan","Handover date","Golden Visa eligibility","Amenities","Current availability"]},
+      options:["Developer name","City","BHK types","Price (₹)","Payment plan","Handover date","Amenities","Current availability"]},
     {id:"explain_scoring", type:"textarea", label:"How should the agent explain \"AI investment scoring\" and \"Meta-dology\" if asked?"},
     {id:"explain_legal", type:"textarea", label:"What does \"independent legal checks\" cover, in your own words?"},
     {id:"update_frequency", type:"checkbox", label:"How often does listing data change?",
@@ -217,7 +219,7 @@ const SECTIONS = [
     {id:"offer_3d_tour", type:"checkbox", label:"Should the agent offer/schedule the certified 3D property tour?",
       options:["Yes","No"]},
     {id:"data_to_capture", type:"checkbox", label:"What must be captured per call?",
-      options:["Budget","Preferred city / project","BHK type","Investment purpose (self-use vs rental)","Timeline","Citizenship / residency","Company name / portfolio (developers)"]},
+      options:["Budget","Preferred city / project","BHK type","Investment purpose (self-use vs rental)","Timeline","Current city of residence","Company name / portfolio (developers)"]},
     {id:"followup_channel", type:"checkbox", label:"Follow-up channel after the call?",
       options:["WhatsApp","Email","SMS","None"]},
     {id:"escalation_flow", type:"textarea", label:"Under what conditions should the call transfer to a human, and to whom?"},
@@ -233,25 +235,25 @@ const SECTIONS = [
       options:["Yes","No"]},
     {id:"auto_call_speed", type:"checkbox", label:"How fast should a form submission trigger an outbound call?",
       options:["Real-time","Same day","Next day","Other"]},
-    {id:"whatsapp_needed", type:"checkbox", label:"Do you need WhatsApp Business integration for international investors?",
+    {id:"whatsapp_needed", type:"checkbox", label:"Do you need WhatsApp Business integration?",
       options:["Yes","No"]},
     {id:"phone_numbers", type:"checkbox", label:"Phone numbers for calling — ",
-      options:["Use existing number(s)","Need new number(s) provisioned per market"]},
+      options:["Use existing number(s)","Need new number(s) provisioned"]},
     {id:"recording_storage", type:"textarea", label:"Call recording / transcript storage and retention requirements?"},
   ]
 },
 {
   title: "Compliance & Privacy",
   questions: [
-    {id:"regulatory_regimes", type:"checkbox", label:"Which regulatory regimes apply?",
-      options:["UAE RERA / DLD","India RERA","Both","Other"]},
-    {id:"kyc_aml", type:"checkbox", label:"Should the agent flag/collect info relevant to KYC/AML for international investors?",
+    {id:"regulatory_regimes", type:"checkbox", label:"Does India RERA apply to the projects being discussed on calls?",
+      options:["Yes","No","Depends on project"]},
+    {id:"kyc_aml", type:"checkbox", label:"Should the agent flag/collect any KYC info from investors (without processing documents itself)?",
       options:["Yes","No"]},
-    {id:"dnd_consent", type:"checkbox", label:"Do TRAI/DND (India) or equivalent UAE consent rules apply to your calling?",
+    {id:"dnd_consent", type:"checkbox", label:"Does TRAI/DND compliance apply to your calling (Do Not Call registry, calling-hour rules)?",
       options:["Yes, must comply","No specific requirement","Unsure"]},
     {id:"recording_disclosure", type:"checkbox", label:"Is an explicit consent / recording disclosure line required at call start?",
       options:["Yes","No","Unsure"]},
-    {id:"data_residency", type:"textarea", label:"Any data residency or retention requirements given the cross-border leads?"},
+    {id:"data_residency", type:"textarea", label:"Any data residency or retention requirements for caller data?"},
   ]
 },
 {
@@ -260,7 +262,7 @@ const SECTIONS = [
     {id:"metrics", type:"checkbox", label:"Which metrics matter most?",
       options:["Leads contacted","Connect rate","Consultations booked","3D tours scheduled","Developer/agent applications progressed","Conversion to confirmed investor"]},
     {id:"segmented_reporting", type:"checkbox", label:"Should reporting be segmented?",
-      options:["By market (UAE vs India)","By user type (investor/developer/agent)","Both","Neither"]},
+      options:["By city/region","By user type (investor/developer/agent)","By language","Neither"]},
     {id:"report_recipients", type:"text", label:"Who should receive reports, and how often?"},
     {id:"dashboard_access", type:"checkbox", label:"Do you want dashboard access to individual call transcripts/recordings?",
       options:["Yes","No"]},
@@ -271,10 +273,10 @@ const SECTIONS = [
   questions: [
     {id:"go_live_date", type:"date", label:"Target go-live date?"},
     {id:"pilot_scope", type:"checkbox", label:"Should we pilot on one flow first, or go full rollout?",
-      options:["Pilot: Dubai investor flow first","Pilot: India flow first","Full rollout, all flows from day one","Other"]},
+      options:["Pilot: investor lead qualification first","Pilot: one city first","Full rollout, all flows from day one","Other"]},
     {id:"volume_growth", type:"textarea", label:"Expected call/lead volume today, and how fast is it likely to grow?"},
     {id:"budget_range", type:"checkbox", label:"Budget range?",
-      options:["Under $500/mo","$500–2,000/mo","$2,000–5,000/mo","$5,000+/mo","Prefer to discuss"]},
+      options:["Under ₹40,000/mo","₹40,000–1,50,000/mo","₹1,50,000–4,00,000/mo","₹4,00,000+/mo","Prefer to discuss"]},
   ]
 },
 {
